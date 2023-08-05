@@ -1,0 +1,47 @@
+# Disciplina: Arquitetura e Organização de Processadores 
+# Atividade: Avaliação 01 – Programação em Linguagem de Montagem 
+# Exercício 01 
+# Aluno: Candido Fachini Neto 
+.data 
+str_w: .string "Entre com o Valor de W: " 
+str_x: .string "Entre com o Valor de X: " 
+str_y: .string "Entre com o Valor de Y: " 
+str_z: .string "Entre com o Valor de Z: " 
+result: .string "\nA média aritmética da soma é igual a : " 
+.text 
+start: 
+la a0, str_w #carrega o endereço da string 
+addi a7, zero, 4 #carrega o printString 
+ecall 
+addi a7, zero, 5 #carrega o readInt 
+ecall 
+add t0, zero, a0 #salva o número digitado no reg t0 
+la a0, str_x #carrega o endereço da string 
+addi a7, zero, 4 #carrega o printString 
+ecall 
+addi a7, zero, 5 #carrega o readInt 
+ecall 
+add t1, zero, a0 #salva o número digitado no reg t1 
+la a0, str_y #carrega o endereço da string 
+addi a7, zero, 4 #carrega o printString 
+ecall 
+addi a7, zero, 5 #carrega o readInt 
+ecall 
+add t2, zero, a0 #salva o número digitado no reg t2 
+la a0, str_z #carrega o endereço da string 
+addi a7, zero, 4 #carrega o printString 
+ecall 
+addi a7, zero, 5 #carrega o readInt 
+ecall 
+add t3, zero, a0 #salva o número digitado no reg t3 
+la a0, result #carrega o endereço da string 
+addi a7, zero, 4 #carrega o printString 
+ecall 
+add t3, t3, t0 
+add t3, t3, t1 
+add t3, t3, t2 #soma os numeros digitados e salva o resultado no reg 
+t3 
+srli t3, t3, 2 #faz a divisão deslocando 2 vezes para a direita 
+addi a0, t3, 0 #salva o resultado da divisão no reg a0 
+addi a7, zero, 1 #chama o printInt 
+ecall
