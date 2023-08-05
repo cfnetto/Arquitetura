@@ -1,0 +1,14 @@
+# Disciplina: Arquitetura e Organização de Processadores 
+# Atividade: Avaliação 01 – Programação em Linguagem de Montagem 
+# Exercício 02 
+# Aluno: Candido Fachini Neto 
+.text 
+main: 
+li a0, 0 # Define o Primeiro Valor de i = 0 
+li a1, 10 # Define o valor limite do Loop 
+Loop: beq a1, a0, Exit # Se a0=10, vai para Exit 
+li a7, 1 # Carrega o valor para printInt 
+ecall # Faz o printInt 
+addi a0, a0, 1 # Faz a soma do valor de a0 (i++) 
+j Loop # Pula para o inicio do Loop 
+Exit: nop # Encerra o programa
