@@ -1,0 +1,66 @@
+# Disciplina: Arquitetura e Organização de Processadores 
+# Atividade: Avaliação 01 – Programação em Linguagem de Montagem 
+# Exercício 03 
+# Aluno: Candido Fachini Neto 
+
+.data 
+leitura: .string "LEITURA DOS ELEMENTOS DO VETOR: \n\n" 
+entre: .string "Entre com A[]: " 
+apresent: .string "\nAPRESENTAÇÃO DO VETOR LIDO: \n\n" 
+a: .string "\nA[]: " 
+
+#Declaração do vertor com 8 elementos 
+vetor: .word 0, 0, 0, 0, 0, 0, 0, 0 
+
+.text 
+main: 
+la t0, vetor #Endereço base do vetor em t0 
+li t1, 0 #Adiciona o valor 0 no reg t1 
+li t2, 8 #Adiciona o valor 8 no reg t2 (valor limite) 
+li t5, 0 #Adiciona o valor 0 no reg t5 
+la a0, leitura #Carrega o endereço da string leitura no reg a0 
+li a7, 4 #Carrega a chamada da printString 
+ecall 
+
+Loop: beq t2, t1, Exit #Se t2 = t1, vai para Exit 
+
+la a0, entre #Carrega o endereço da string entre no reg a0 
+li a7, 4 #Carrega a chamada da printString 
+ecall 
+
+li a7, 5 #Carrega a chamada da readInt 
+ecall 
+mv t3, a0 #Move o valor digitado para o reg t3 
+sw t3, 0(t0) #Salva o valor do reg t3 na memoria 
+
+addi t1, t1, 1 #Soma 1 ao reg t1 (i++) 
+add t4, t5, t5 #t4 = t5 + t5 = 2 * t5 
+add t4, t4, t4 #t4 = t4 + t4 = 2 * 2 * t5 = 4 * t5 
+addi t0, t0, 4 #Incrementa 4 ao t0 (atualiza o endereço-base) 
+addi t5, t5, 1 #Incrementa 1 ao reg t5 
+j Loop 
+Exit: nop 
+
+la t0, vetor 
+li t1, 0 #Adiciona o valor 0 no reg t0 
+li t2, 8 #Adiciona o valor 8 no reg t1 (valor limite) 
+
+la a0, apresent #Carrega o endereço da string apresent no reg a0 
+li a7, 4 #Carrega a chamada da printString 
+ecall 
+
+Loop2: beq t2, t1, Exit2 #Se t1 = t0, vai para Exit2 
+
+la a0, a #Carrega o endereço da string a no reg a0 
+li a7, 4 #Carrega a chamada da printString 
+ecall 
+
+lw a0, 0(t0) #Carrega o VALOR do reg t0 (primeiro elemento do vetor) 
+li a7, 1 #Carrega a chamada da printInt 
+ecall 
+
+addi t1, t1, 1 #Incrementa 1 ao t1 (i++) 
+addi t0, t0, 4 #Incrementa 4 ao t0 (atualiza o endereço-base) 
+j Loop2 #Volta ao Loop2 
+
+Exit2: nop #Encerra o Loop2 e consequentemente o programa
