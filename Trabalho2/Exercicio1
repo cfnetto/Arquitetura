@@ -1,0 +1,160 @@
+# Disciplina: Arquitetura e Organização de Processadores 
+# Atividade: Avaliação 02 – Programação em Linguagem de Montagem 
+# Programa 2 
+# Aluno: Candido Fachini Neto 
+
+.data 
+
+vetor_A: .word 0, 0, 0, 0, 0, 0, 0, 0 #Declaração do vetor e 
+inicializando os elementos com 0 
+entre: .string "Entre com o tamanho do vetor(min=1 e max=8): "
+invalido: .string "Valor Inválido!\n"
+vetor_1: .string "Vetor_A["
+vetor_2: .string "] = " 
+indice: .string "\nDigite o índice do valor a ser impresso: " 
+elemento_1: .string "\n\nO elemento do vetor na posição "
+elemento_2: .string " possui o valor " 
+
+.text 
+
+main: 
+
+la s0, vetor_A # Endereço base do vetor em s0
+li s1, 0 # Atribui o valor 0 no reg t0
+li t0, 0 # Atribui o valor 0 no reg t0 
+li t4, 0 # Atribui 0 ao reg t4 (indice do vetor)
+li t5, 0 # Atribui 0 ao reg t5 (endereço relativo) 
+
+#################################################################### 
+# PEDE AO USUARIO A QUANTIDADE DE ELEMENTOS DO VETOR 
+Input:la a0, entre # Carrega o endereço da string "entre" no reg a0
+li a7, 4 # Carrega a chamada do printString
+ecall # Chama o ecall (syscall)
+
+li a7, 5 # Carrega a chamada do readInt 
+ecall # Espera o usuario digitar o número
+mv a1, a0 # Move o valor digitado para o a1 
+#################################################################### 
+
+#################################################################### 
+# VERIFICA SE O NÚMERO DIGITADO PELO USUARIO É ENTRE 1 E 8 
+li t1, 1 # Atribui o valor 1 no reg t1 
+
+# Caso o valor d0 reg t1(1) seja menor que o o valor digitado pelo 
+usuario(a1), t2 recebe 1 
+
+slt t2, t1, a1 
+beq t2, zero, Invalid # Caso t2 seja igual a zero vai para 
+"Invalid" 
+
+li t1, 8 # Atribui o valor 8 no reg t1 
+# Caso o valor do reg t1(8) seja maior que o o valor digitado pelo 
+usuario(a1), t2 recebe 1 
+
+slt t2, a1, t1 
+beq t2, zero, Invalid # Caso t2 seja igual a zero vai para 
+"Invalid"
+
+j Loop # Caso o valor digitado esteja OK, vai para Loop
+
+Invalid: la a0, invalido # Caso contrário 
+li a7, 4 # É impressa a mensagem de valor invalido
+ecall # Imprime a string
+j Input # E o programa retorna para digitar outro valor 
+#################################################################### 
+
+#################################################################### 
+# LEITURA DOS ELEMENTOS DO VETOR 
+
+Loop: beq t0, a1, Exit # Caso o valor do t0 (0) seja igual ao 
+a1, vai para Exit 
+
+la a0, vetor_1 # Carrega o endereço da string "vetor_1" no reg a0
+li a7, 4 # Carrega a chamada do printString
+ecall # Imprime a string
+
+mv a0, t4 # Move o valor do indice para o reg a0
+li a7, 1 # Carrega a chamada do printInt
+ecall # Imprime o INDICE do vetor
+
+la a0, vetor_2 # Carrega o endereço da string "vetor_2" no 
+reg a0 
+li a7, 4 # Carrega a chamada do printString
+ecall # Imprime a string
+
+li a7, 5 # Carrega a chamada do readInt 
+ecall # Espera o usuário digitar o número
+mv t1, a0 # Move o valor digitado para o reg t1
+add t6, t5, s0 # Calcula o endereço absoluto (endereço 
+relativo + endereço-base)
+sw t1, 0(t6) # Armazena o valor do reg t1 na memória 
+
+addi t4, t4, 1 # Incrementa o INDICE do vetor 
+
+# Calcula o endereço RELATIVO 
+add t5, t4, t4 
+add t5, t5, t5 # Reg t5 recebe t4 * 4 
+
+addi t0, t0, 1 # Incrementa o valor de t0 (i++)
+j Loop # Retorna ao começo do Loop
+Exit: nop # Encerra o Loop e continua o codigo 
+#################################################################### 
+
+#################################################################### 
+# SOLICITA O INDICE DO VETOR A SER IMPRESSO 
+la a0, indice # Carrega o endereço da string "indice" 
+no reg a0 
+li a7, 4 # Carrega a chamada do printString
+ecall # Imprime a string
+
+li a7, 5 # Carrega a chamada do readInt
+ecall # Espera o usuario digitar o numero
+mv a1, a0 # Move o valor digitado para o reg a1 
+#################################################################### 
+
+#################################################################### 
+# LOCALIZA O INDICE DO VETOR SOLICITADO PELO USUARIO 
+
+li t0, 0 # Atribui o valor 0 no reg t0 
+li t2, 0 # Atribui o valor 0 no reg t2 
+li t4, 0 # INDICE do vetor
+li t5, 0 # Endereço relativo
+
+Loop2: beq t0, a1, Print # Caso t0 seja igual a a1, vai para 
+"Print"
+
+add t2, t5, s0 # Endereço absoluto (0 + indice * 4) 
+addi t4, t4, 1 # Incrementa 1 ao indice do vetor
+add t5, t4, t4 
+add t5, t5, t5 # Calcula o endereço relativo multiplicando t5 * 4
+addi t0, t0, 1 # Incrementa o valor de t0 (i++)
+
+j Loop2 # Retorna ao começo do Loop2
+
+# Por fim, será armazenado no t2 o endereço do valor anterior ao 
+solicitado
+####################################################################
+
+####################################################################
+# EXIBE O VALOR DO INDICE SOLICITADO PELO USUARIO
+
+Print: add t2, t5, s0 # Somando o t5 com o s0, teremos o end. do 
+valor solicitado
+la a0, elemento_1 # Carrega o endereço da string "elemento_1" 
+no reg a0
+li a7, 4 # Carrega a chamada do printString
+ecall # Imprime a string
+
+mv a0, a1 # Move o indice do vetor(a1) para o reg a0
+li a7, 1 # Carrega a chamada do printInt
+ecall # Imprime o Int
+
+la a0, elemento_2 # Carrega o endereço da string "elemento_2" 
+no reg a0
+li a7, 4 # Carrega a chamada do printString
+ecall # Imprime a string
+
+lw a0, 0(t2) # Carrega o VALOR armazenado na memoria
+li a7, 1 # Carrega a chamada do printInt
+ecall # Imprime o Int
+####################################################################
